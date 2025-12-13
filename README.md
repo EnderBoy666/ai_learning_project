@@ -40,11 +40,11 @@
 首先呢，这个项目分为三个主要部分
 首先，是文字识别（尚在编写），用于给第二阶段提供数据
 接下来，就是第二部分：使用deepseek对传入的数据进行分析和批改。（或者自己下别的模型）
-* 经过我严谨的测试，在cpu（intel Xeon W-11955M)和16G ddr4内存上运行最低配的模型（1.5b）上历时仅仅两节课的时间就给出了分析，尽管只有256的上限
+* 经过我严谨的测试，在cpu（intel Xeon W-11955M)和16G ddr4内存上运行最低配的模型（1.5b）上历时仅仅两节课的时间就给出了分析，尽管只有256的字数上限
 
 嗯对，第三部分。另一个ai（尚在寻找）对第二阶段传入的数据进行格式的编写和模板矫正，给出文档和ppt
 
-## 二、还没想好
+## 二、使用方法
 再放一尊佛
 ```
 /**
@@ -69,3 +69,37 @@
  *          .............................................
  *           佛曰：bug泛滥，我已瘫痪！
 ```
+##### *目前项目还没写完，所以部署方法可能会不断更新*
+1. 首先你需要先新建一个虚拟环境
+```py
+python -m venv .venv
+```
+2. 然后进入虚拟环境
+```py
+.\.venv\Scripts\activate
+```
+3. 安装依赖包
+```py
+pip install -r requirements.txt
+```
+**注意，你需要手动寻找适合的torch版本。如果你不是nvidia显卡，请使用cpu或别的版本的pytorch。**
+
+具体的，先在命令行中输入nvdia-smi
+```py
+nvidia-smi
+```
+然后你会得到类似下图的输出：
+![alt text](rm_image/nvidia-smi.png)
+右上角的，是你的显卡支持的最大cuda版本
+接下来，来到[pytorch](https://pytorch.org/get-started/locally/),选择合适的版本，复制下面的命令来到刚刚的虚拟环境中运行。例如：
+```bash
+pip3 install torch torchvision --index-url https://download.pytorch.org/whl/cu130
+```
+
+4. 安装模型，此时请移步至model文件夹内，按照其中的README.md进行操作。在这里不再过多赘述
+
+5. 在虚拟环境中,运行main.py文件。
+```py
+python main.py
+```
+之后，将会弹出一个网站，按照指引进行操作即可
