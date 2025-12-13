@@ -18,7 +18,7 @@ python -m venv .downloads
 ```bash
 pip install modelscope sentencepiece protobuf
 ```
-如果您使用hugging face,可以直接用官方工具下载，方法大致是一样的
+如果您使用hugging face,可以直接用官方工具下载，方法大致是一样的。只要确保模型最终被放到了model\模型名称内就可以了
 
 * 3.安装好了之后，运行model_download.py文件（务必启动虚拟环境，如下）
 ```bash
@@ -28,3 +28,4 @@ pip install modelscope sentencepiece protobuf
 python model_download.py
 ```
 * 4.接下来按照指示进行操作即可
+* 5.现在你已经安装好了，请在主程序的settings.py里修改路径（即下载完成后跳出来的那个）
