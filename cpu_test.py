@@ -1,17 +1,18 @@
 import os
 import torch
+from settings import DeepSeekSettinngs
 from transformers import (
     AutoTokenizer,
     AutoModelForCausalLM,
     BitsAndBytesConfig
 )
-
+ds_settings=DeepSeekSettinngs()
 # 1. 基础环境配置
 os.environ["HF_HUB_DISABLE_SYMLINKS_WARNING"] = "1"
 os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
 
 # 2. 模型路径（本地路径）
-model_path = r".\model\DeepSeek-R1-Distill-Qwen-1.5B"
+model_path = ds_settings.ds_path
 
 # 3. 设备与量化配置（CPU专用）
 device = "cpu"

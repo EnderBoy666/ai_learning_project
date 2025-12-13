@@ -95,6 +95,8 @@ nvidia-smi
 ```bash
 pip3 install torch torchvision --index-url https://download.pytorch.org/whl/cu130
 ```
+*如果下载过慢，可以把链接替换为https://mirrors.nju.edu.cn/pytorch/whl/cu130*
+>又及，本项目包含MNIST和EMNIST的数据集
 
 4. 安装模型，此时请移步至model文件夹内，按照其中的README.md进行操作。在这里不再过多赘述
 

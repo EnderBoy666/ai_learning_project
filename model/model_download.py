@@ -5,7 +5,7 @@ def download(model_name, model_id):
     # 移除全局变量，使用返回值更合适
     model_dir = snapshot_download(
         model_id=model_id,  # 这里添加逗号修复语法错误
-        cache_dir="./",  # 模型保存路径
+        cache_dir=".\\",  # 模型保存路径
         revision="master"
     )
     return model_dir
