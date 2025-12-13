@@ -47,7 +47,7 @@ def show_sample():
     plt.imshow(image, cmap='gray')
     plt.title(f"Label: {label}")
     plt.axis('off')
-    #plt.show()
+    plt.show()
 
 show_sample()  # 运行查看样本
 
@@ -85,6 +85,71 @@ model = HandwritingCNN().to(DEVICE)
 criterion = nn.CrossEntropyLoss()  # 交叉熵损失（分类任务）
 optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
 
+# ====================== 4. 模型训练 ======================
+def train(model, loader, criterion, optimizer, epoch):
+    model.train()  # 训练模式
+    total_loss = 0
+    correct = 0
+    for batch_idx, (data, target) in enumerate(loader):
+        data, target = data.to(DEVICE), target.to(DEVICE)
+        
+        # 前向传播
+        output = model(data)
+        loss = criterion(output, target)
+        total_loss += loss.item()
+        
+        # 反向传播+优化
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+        
+        # 计算准确率
+        pred = output.argmax(dim=1, keepdim=True)
+        correct += pred.eq(target.view_as(pred)).sum().item()
+        
+        # 打印进度
+        if batch_idx % 100 == 0:
+            print(f'Epoch {epoch} [{batch_idx * len(data)}/{len(loader.dataset)}] '
+                  f'Loss: {loss.item():.6f}')
+    
+    # 计算本轮平均损失和准确率
+    avg_loss = total_loss / len(loader)
+    accuracy = 100. * correct / len(loader.dataset)
+    print(f'Train Epoch {epoch}: Average loss: {avg_loss:.4f}, Accuracy: {correct}/{len(loader.dataset)} ({accuracy:.2f}%)')
+
+# ====================== 5. 模型测试 ======================
+def test(model, loader, criterion):
+    model.eval()  # 评估模式（关闭Dropout）
+    test_loss = 0
+    correct = 0
+    with torch.no_grad():  # 禁用梯度计算（加速）
+        for data, target in loader:
+            data, target = data.to(DEVICE), target.to(DEVICE)
+            output = model(data)
+            test_loss += criterion(output, target).item()
+            pred = output.argmax(dim=1, keepdim=True)
+            correct += pred.eq(target.view_as(pred)).sum().item()
+    
+    avg_loss = test_loss / len(loader)
+    accuracy = 100. * correct / len(loader.dataset)
+    print(f'Test set: Average loss: {avg_loss:.4f}, Accuracy: {correct}/{len(loader.dataset)} ({accuracy:.2f}%)\n')
+    return accuracy
+
+# ====================== 6. 执行训练和测试 ======================
+if __name__ == '__main__':
+    best_accuracy = 0
+    for epoch in range(1, EPOCHS + 1):
+        train(model, train_loader, criterion, optimizer, epoch)
+        test_acc = test(model, test_loader, criterion)
+        
+        # 保存最优模型
+        if test_acc > best_accuracy:
+            best_accuracy = test_acc
+            torch.save(model.state_dict(),r'.\model\MNIST\best_handwriting_model.pth')
+    
+    #print(f'Best test accuracy: {best_accuracy:.2f}%')
+
+# ====================== 7. 自定义图片预测（可选） ======================
 from PIL import Image
 
 def predict_number_image(image_path):
@@ -104,11 +169,14 @@ def predict_number_image(image_path):
         output = model(image)
         pred = output.argmax(dim=1).item()
     
-    #print(f'Predicted digit: {pred}')
+    print(f'Predicted digit: {pred}')
     # 可视化预测的图片
     img = Image.open(image_path).convert('L')
     plt.imshow(img, cmap='gray')
     plt.title(f'Predicted: {pred}')
     plt.axis('off')
-    #plt.show()
+    plt.show()
     return pred
+
+# 调用示例（替换为你的手写数字图片路径，建议白底黑字、28x28尺寸）
+#predict_custom_image(r'.\test\1.png')

@@ -1,9 +1,10 @@
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
 from settings import DeepSeekSettinngs
-import lt_write
+import lt_write,num_write
 
-print(lt_write.predict_custom_char('write_test_image/B.png'))
+print(lt_write.predict_custom_char('write_test_image/3.png'))
+print(num_write.predict_number_image('write_test_image/2.png'))
 
 ds_settings=DeepSeekSettinngs()
 # 配置量化（适配5070）
