@@ -1,31 +1,35 @@
-import torch
-from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
-from settings import DeepSeekSettinngs
-import lt_write,num_write
+import gradio as gr
+from settings import DeepSeekSettinngs,CreateExamSettings
+import sqlite
+DS_settings=DeepSeekSettinngs()
+CE_settings=CreateExamSettings()
 
-print(lt_write.predict_custom_char('write_test_image/3.png'))
-print(num_write.predict_number_image('write_test_image/2.png'))
+c=sqlite.start()
 
-ds_settings=DeepSeekSettinngs()
-# 配置量化（适配5070）
-bnb_config = BitsAndBytesConfig(
-    load_in_8bit=True,  # 4-bit量化（8GB显存），12GB可改load_in_8bit=True
-    bnb_4bit_use_double_quant=True,
-    bnb_4bit_quant_type="nf4",
-    bnb_4bit_compute_dtype=torch.bfloat16
-)
+def create_class(class_name,class_grade,class_list_path):
+    i=sqlite.create_class(class_name,class_grade,class_list_path)
+    return i
 
-# 加载模型和tokenizer
-model_path = ds_settings.ds_path  # 模型路径
-tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)
-model = AutoModelForCausalLM.from_pretrained(
-    model_path,
-    trust_remote_code=True,
-    quantization_config=bnb_config,
-    device_map="auto",  # 自动分配到GPU
-    dtype=torch.bfloat16,
-    low_cpu_mem_usage=True
-)
-model.eval()
+def class_manage(class_name,class_grade):
+    return class_name
 
+def exam_manage(exam_name,class_name):
+    return exam_name
 
+with gr.Blocks(title="ai学习主页") as app:
+    with gr.Tabs():
+        with gr.Tab(label="创建班级"):
+            class_name_in=gr.Textbox(label="输入班级ID(就是你是几班的)", placeholder="请输入您的班级名称...")
+            class_grade_in=gr.Textbox(label="输入年级", placeholder="请输入您的年级...")
+            class_list=gr.Textbox(label="输入班级名单的路径", placeholder="请输入班级名单的路径(表头为名字与学号)...")
+            class_btn = gr.Button("添加班级")
+            class_output = gr.Textbox(label="结果")
+            class_btn.click(create_class, inputs=[class_name_in,class_grade_in,class_list], outputs=class_output)
+        with gr.Tab(label="管理班级"):
+            class_name_in=gr.Textbox(label="输入班级ID(就是你是几班的)", placeholder="请输入您的班级名称...")
+            class_grade_in=gr.Textbox(label="输入年级", placeholder="请输入您的年级...")
+            class_btn = gr.Button("查看班级")
+            class_output = gr.Textbox(label="查询结果")
+            class_btn.click(class_manage, inputs=[class_name_in,class_grade_in], outputs=class_output)
+
+app.launch()

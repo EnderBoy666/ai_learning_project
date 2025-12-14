@@ -1,10 +1,7 @@
-.venv
-.downloads
 hf_cache
 __pycache__
 deepseek-ai
-.lock
-._____temp
 test
-.vscode
 data
+*.db
+.*

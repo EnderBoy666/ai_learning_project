@@ -31,3 +31,7 @@ fastapi
 pydantic
 fastapi[standard]
 matplotlib
+gradio
+sqlalchemy
+panda
+openpyxl

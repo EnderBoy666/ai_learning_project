@@ -38,8 +38,6 @@
 
 好的，接下来正经的介绍一下
 
->注意，生成试卷的东西在这里[试卷生成器](https://github.com/EnderBoy666/ai_learning_project/tree/main/create_exam)，可以去查看那里的README.md哈。
-
 首先呢，这个项目分为三个主要部分
 
 第一个，是文字识别（尚在编写），用于给第二阶段提供数据
