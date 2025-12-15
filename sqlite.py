@@ -122,3 +122,8 @@ def create_class(class_name, class_list_path):
         conn.close()
         return(f"读取失败：{e}")
 
+def db_find(form,table,v):
+    conn=load()
+    c=conn.cursor()
+    i=c.execute(f"SELECT ID FROM {table} WHERE {form} = {v}")
+    return i

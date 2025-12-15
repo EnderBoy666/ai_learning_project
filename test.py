@@ -6,7 +6,9 @@ def process_text(text):
 
 def process_image(image):
     # 简单处理：返回灰度图
-    return gr.Image.update(image.convert("L"))
+    return image
+def check(i,t,l):
+    return i,t,l
 
 # 构建带标签页的界面
 with gr.Blocks(title="多标签页示例") as demo:
@@ -26,10 +28,15 @@ with gr.Blocks(title="多标签页示例") as demo:
         
         # 第二个标签页：图片处理
         with gr.Tab(label="图片灰度化"):
-            img_input = gr.Image(type="pil", label="上传图片")
-            img_output = gr.Image(label="处理结果")
+            img_input = gr.components.File()
+            img_output = gr.Textbox(label="处理结果")
             img_btn = gr.Button("生成灰度图")
             img_btn.click(process_image, inputs=img_input, outputs=img_output)
+        with gr.Tab(label="复选框"):
+            checkbox = gr.CheckboxGroup(choices=[1,2,3],value=[True,True,True])
+            check_out=gr.Textbox()
+            img_btn = gr.Button("生成灰度图")
+            img_btn.click(check, inputs=checkbox, outputs=check_out)
 
 # 启动应用
 if __name__ == "__main__":
