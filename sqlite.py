@@ -18,18 +18,9 @@ def start():
     c = conn.cursor()
     print ("数据库打开成功")
     try:
-        c.execute('''CREATE TABLE grades
-                (ID INTEGER PRIMARY  KEY   AUTOINCREMENT,
-                NAME   TEXT    NOT NULL);''')
-        print ("年级表创建成功")
-    except sqlite3.OperationalError:
-        pass
-    try:
         c.execute('''CREATE TABLE classes
             (ID INTEGER PRIMARY  KEY     AUTOINCREMENT,
-            NAME       TEXT     NOT NULL,
-            GRADE       INT     NOT NULL,
-            FOREIGN KEY (GRADE) REFERENCES grades (ID));''')
+            NAME       TEXT     NOT NULL);''')
         print ("班级创建成功")
     except sqlite3.OperationalError:
         pass
@@ -76,25 +67,13 @@ def db_list(table, form):
     list1 = [row[0] for row in tuple_list]
     return list1
 
-def create_class(class_name, class_grade, class_list_path):
+def create_class(class_name, class_list_path):
     conn = load()
     c = conn.cursor()
     
     try:
-        # 检查年级是否存在
-        c.execute("SELECT ID FROM grades WHERE NAME = ?", (class_grade,))
-        grade_result = c.fetchone()
-        
-        if not grade_result:
-            # 插入新年级
-            c.execute("INSERT INTO grades (NAME) VALUES (?)", (class_grade,))
-            conn.commit()
-            grade_id = c.lastrowid
-        else:
-            grade_id = grade_result[0]
-        
         # 检查班级是否存在
-        c.execute("SELECT ID FROM classes WHERE NAME = ? AND GRADE = ?", (class_name, grade_id))
+        c.execute("SELECT ID FROM classes WHERE NAME = (?)", (class_name,))
         class_result = c.fetchone()
         
         if class_result:
@@ -103,7 +82,7 @@ def create_class(class_name, class_grade, class_list_path):
             return ("已添加过该班")
         
         # 插入新班级
-        c.execute("INSERT INTO classes (NAME, GRADE) VALUES (?, ?)", (class_name, grade_id))
+        c.execute("INSERT INTO classes (NAME) VALUES (?)", (class_name,))
         conn.commit()
         class_id = c.lastrowid
         
@@ -129,7 +108,7 @@ def create_class(class_name, class_grade, class_list_path):
         c.close()
         conn.close()
         
-        return (f"成功添加{class_grade}年级（{class_name}）班")
+        return (f"成功添加{class_name}")
     except FileNotFoundError:
         c.close()
         conn.close()
