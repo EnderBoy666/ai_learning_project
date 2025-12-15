@@ -11,7 +11,7 @@ def create_class(class_name,class_list_path):
     return i
 
 def class_manage(class_name):
-    i=sqlite.db_find("classes","NAME",class_name)
+    i=sqlite.db_find("NAME","classes",class_name)
     return i
 
 def exam_manage(exam_name):
