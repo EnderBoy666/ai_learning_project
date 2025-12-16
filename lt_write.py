@@ -5,6 +5,8 @@ from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
 import matplotlib.pyplot as plt
 import numpy as np
+import sys
+from pathlib import Path
 
 # ====================== 1. 配置参数 ======================
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")

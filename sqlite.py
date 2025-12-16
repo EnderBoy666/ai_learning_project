@@ -152,7 +152,7 @@ def db_add(table, form, values):
         placeholders = ', '.join(['?'] * len(values))
         c.execute(f"INSERT INTO {table} ({form}) VALUES ({placeholders})", values)
         conn.commit()
-        return "添加成功"
+        return f"添加成功添加{values}"
     except Exception as e:
         conn.rollback()
         return f"添加失败：{str(e)}"
