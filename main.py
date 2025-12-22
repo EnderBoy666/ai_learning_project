@@ -39,6 +39,9 @@ def class_add(name, code, class_name):
     result = sqlite.db_add("students", "NAME, CODE, CLASS", (name, code, class_id))
     return result
 
+def exam_creater(exam_name,exam_class):
+    return exam_name
+
 def exam_manage(exam_name):
     return exam_name
 
@@ -64,5 +67,11 @@ with gr.Blocks(title="ai学习主页") as app:
                 stu_add_out = gr.Textbox(label="添加结果:")
                 # 修复class_id获取逻辑，通过班级名称动态查询
                 stu_add_btn.click(class_add, inputs=[stu_name_a, stu_code_a, class_name_in], outputs=stu_add_out)
-
+            
+        with gr.Tab(label="创建试卷"):
+            exam_name=gr.Textbox(label="试卷名称")
+            exam_class=gr.Dropdown(choices=list(sqlite.db_list("classes","NAME")),label="选择班级")
+            exam_add_btn=gr.Button("创建试卷")
+            exam_add_out=gr.Textbox(label="添加结果")
+            exam_add_btn.click(exam_creater,inputs=[exam_name,exam_class],outputs=exam_add_out)
 app.launch()

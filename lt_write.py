@@ -114,7 +114,7 @@ def predict_custom_char(image_path):
     ])
     image = transform(image).unsqueeze(0).to(DEVICE)
 
-    model.load_state_dict(torch.load(r'.\model\MNIST\best_emnist_model.pth'))
+    model.load_state_dict(torch.load(r'.\model\MNIST\best_emnist_model.pth',map_location=torch.device(DEVICE)))
     model.eval()
     with torch.no_grad():
         output = model(image)
