@@ -2,12 +2,30 @@ import gradio as gr
 import sqlite3
 import sys
 import pandas as pd
+import qrcode
 from pathlib import Path
-from settings import CreateExamSettings
+from settings import CreateExamSettings,QrSettings
 
 # 添加上级目录到Python搜索路径（project/）
 sys.path.append(str(Path(__file__).parent.parent))
 CE_settings = CreateExamSettings()
+QR_settings= QrSettings()
+
+# 创建二维码对象
+def qr_create(data):
+    qr = qrcode.QRCode(
+    version=1, # 控制二维码大小（1-40）
+    error_correction=qrcode.constants.ERROR_CORRECT_L, # 容错率
+    box_size=10, # 每个“盒子”的像素数
+    border=4, # 边框厚度
+    )
+    # 添加数据并生成二维码
+    qr.add_data(data)
+    qr.make(fit=True)
+    # 创建图像并保存
+    img = qr.make_image(fill_color="black", back_color="white")
+    img.save(f".\\{QR_settings.qr_path}.\\{data}.png")
+
 
 def load():
     """加载数据库连接"""

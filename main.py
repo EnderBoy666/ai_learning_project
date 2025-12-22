@@ -40,6 +40,8 @@ def class_add(name, code, class_name):
     return result
 
 def exam_creater(exam_name,exam_class):
+    exam_id=len(sqlite.db_list("exams","ID"))
+    sqlite.qr_create(exam_id)
     return exam_name
 
 def exam_manage(exam_name):
@@ -72,6 +74,6 @@ with gr.Blocks(title="ai学习主页") as app:
             exam_name=gr.Textbox(label="试卷名称")
             exam_class=gr.Dropdown(choices=list(sqlite.db_list("classes","NAME")),label="选择班级")
             exam_add_btn=gr.Button("创建试卷")
-            exam_add_out=gr.Textbox(label="添加结果")
+            exam_add_out=gr.Textbox(label="添加结果:")
             exam_add_btn.click(exam_creater,inputs=[exam_name,exam_class],outputs=exam_add_out)
 app.launch()

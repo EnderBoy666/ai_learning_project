@@ -5,3 +5,7 @@ class DeepSeekSettings:
 class CreateExamSettings:
     def __init__(self):
         self.db_path=r'.\exam.db'
+
+class QrSettings:
+    def __init__(self):
+        self.qr_path=r".\exam_data\qr"

@@ -35,3 +35,4 @@ gradio
 sqlalchemy
 panda
 openpyxl
+qrcode
