@@ -100,7 +100,7 @@ nvidia-smi
 pip3 install torch torchvision --index-url https://download.pytorch.org/whl/cu130
 ```
 *如果下载过慢，可以把链接替换为https://mirrors.nju.edu.cn/pytorch/whl/cu130*
->又及，本项目的手写识别的训练（就那两个trai,py）使用的是EMNIST与MNIST数据集，如需训练自行下载后放入）
+>又及，本项目的手写识别的训练（就那两个train.py）使用的是EMNIST与MNIST数据集，如需训练自行下载后放入）
 
 4. 安装模型，此时请移步至model文件夹内，按照其中的README.md进行操作。在这里不再过多赘述
 
