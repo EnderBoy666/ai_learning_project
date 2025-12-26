@@ -5,5 +5,5 @@ test
 data
 *.db
 .venv
-exam_data/qr/*
+exam_data/qr/*.png
 DeepSeek-R1-Distill-Qwen-1.5B/
