@@ -1,6 +1,6 @@
 class DeepSeekSettings:
     def __init__(self):
-        self.ds_path=r".\model\deepseek-ai\DeepSeek-R1-Distill-Qwen-7B"
+        self.ds_path=r".\model\deepseek-ai\DeepSeek-R1-Distill-Qwen-1.5B"
 
 class CreateExamSettings:
     def __init__(self):

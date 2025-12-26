@@ -8,8 +8,8 @@ CE_settings = CreateExamSettings()
 c = sqlite.start()
 
 def create_class(class_name, class_list_path):
-    i = sqlite.create_class(class_name, class_list_path)
-    return i
+    result = sqlite.create_class(class_name, class_list_path)
+    return result
 
 def class_manage(class_name):
     # 查询班级ID
@@ -42,6 +42,7 @@ def class_add(name, code, class_name):
 def exam_creater(exam_name,exam_class):
     exam_id=len(sqlite.db_list("exams","ID"))
     sqlite.qr_create(exam_id)
+    
     return exam_name
 
 def exam_manage(exam_name):
@@ -50,30 +51,48 @@ def exam_manage(exam_name):
 with gr.Blocks(title="ai学习主页") as app:
     with gr.Tabs():
         with gr.Tab(label="创建班级"):
-            class_name_in = gr.Textbox(label="输入班级ID(就是你是几班的)", placeholder="请输入您的班级名称(例：高一（5）班)...")
+            class_name_input = gr.Textbox(label="输入班级ID(就是你是几班的)", placeholder="请输入您的班级名称(例：高一（5）班)...")
             class_list = gr.components.File(label="上传班级名单")
             class_btn = gr.Button("添加班级")
-            class_output = gr.Textbox(label="结果")
-            class_btn.click(create_class, inputs=[class_name_in, class_list], outputs=class_output)
+            create_class_output = gr.Textbox(label="结果")
 
         with gr.Tab(label="管理班级"):
-            class_name_in = gr.Textbox(label="输入班级ID(就是你是几班的)", placeholder="请输入您的班级名称...")
-            class_btn = gr.Button("查看班级")
+            # 创建班级下拉菜单，后面会动态更新
+            class_name_dropdown = gr.Dropdown(choices=sqlite.db_list("classes","NAME"), label="选择班级")
+            view_class_btn = gr.Button("查看班级")
             with gr.Accordion("班级名单"):
-                class_output = gr.DataFrame(label="查询结果", headers=["学号", "姓名"], show_search='search',)
-                class_btn.click(class_manage, inputs=[class_name_in], outputs=class_output)
+                student_list_output = gr.DataFrame(label="查询结果", headers=["学号", "姓名"], show_search='search',)
+                view_class_btn.click(class_manage, inputs=[class_name_dropdown], outputs=student_list_output)
             with gr.Group():
                 stu_name_a = gr.Textbox(label="输入添加学生的姓名")
                 stu_code_a = gr.Textbox(label="输入添加学生的学号")
                 stu_add_btn = gr.Button("添加学生")
                 stu_add_out = gr.Textbox(label="添加结果:")
-                # 修复class_id获取逻辑，通过班级名称动态查询
-                stu_add_btn.click(class_add, inputs=[stu_name_a, stu_code_a, class_name_in], outputs=stu_add_out)
+                # 添加学生后刷新学生列表
+                def add_student(name, code, class_name):
+                    result = class_add(name, code, class_name)
+                    # 刷新学生列表
+                    students = class_manage(class_name)
+                    return result, students
+                stu_add_btn.click(add_student, inputs=[stu_name_a, stu_code_a, class_name_dropdown], outputs=[stu_add_out, student_list_output])
             
         with gr.Tab(label="创建试卷"):
-            exam_name=gr.Textbox(label="试卷名称")
-            exam_class=gr.Dropdown(choices=list(sqlite.db_list("classes","NAME")),label="选择班级")
-            exam_add_btn=gr.Button("创建试卷")
-            exam_add_out=gr.Textbox(label="添加结果:")
-            exam_add_btn.click(exam_creater,inputs=[exam_name,exam_class],outputs=exam_add_out)
+            exam_name = gr.Textbox(label="试卷名称")
+            # 创建班级下拉菜单，后面会动态更新
+            exam_class_dropdown = gr.Dropdown(choices=list(sqlite.db_list("classes","NAME")), label="选择班级")
+            exam_add_btn = gr.Button("创建试卷")
+            exam_add_out = gr.Textbox(label="添加结果:")
+            exam_add_btn.click(exam_creater, inputs=[exam_name, exam_class_dropdown], outputs=exam_add_out)
+    
+    # 添加班级后更新所有班级下拉菜单
+    class_btn.click(
+        create_class, 
+        inputs=[class_name_input, class_list], 
+        outputs=[create_class_output]
+    ).then(
+        # 使用then方法在添加班级成功后更新两个下拉菜单
+        fn=lambda: [sqlite.db_list("classes","NAME"), sqlite.db_list("classes","NAME")],
+        inputs=[],
+        outputs=[class_name_dropdown, exam_class_dropdown]
+    )
 app.launch()
